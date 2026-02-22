@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import type { Lead, LeadFormData, LeadStatus, FollowUpNote } from '@/types/lead';
 
 const n = (text: string, daysAgo: number): FollowUpNote => ({
@@ -20,10 +20,28 @@ const INITIAL_LEADS: Lead[] = [
 
 let nextId = 9;
 
+const getStoredLeads = (): Lead[] => {
+  const stored = localStorage.getItem('leads');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      nextId = Math.max(...parsed.map((l: Lead) => parseInt(l._id) || 0), 8) + 1;
+      return parsed;
+    } catch {
+      return INITIAL_LEADS;
+    }
+  }
+  return INITIAL_LEADS;
+};
+
 export const useLeads = () => {
-  const [leads, setLeads] = useState<Lead[]>(INITIAL_LEADS);
+  const [leads, setLeads] = useState<Lead[]>(getStoredLeads);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<LeadStatus | ''>('');
+
+  useEffect(() => {
+    localStorage.setItem('leads', JSON.stringify(leads));
+  }, [leads]);
 
   const addLead = useCallback((data: LeadFormData) => {
     const newLead: Lead = {

@@ -54,8 +54,7 @@ const LeadNotesDialog = ({ lead, onClose, onAddNote }: LeadNotesDialogProps) => 
   };
 
   const handleQuickNote = (text: string) => {
-    if (!lead) return;
-    onAddNote(lead._id, text);
+    setNote(text);
   };
 
   return (
