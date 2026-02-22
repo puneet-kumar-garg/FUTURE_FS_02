@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 220 25% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+
+    --primary: 173 58% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 25% 10%;
+
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 262 52% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 173 58% 39%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 220 14% 92%;
+    --sidebar-primary: 173 58% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 16%;
+    --sidebar-accent-foreground: 220 14% 92%;
+    --sidebar-border: 220 20% 18%;
+    --sidebar-ring: 173 58% 39%;
+
+    --success: 152 60% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 210 100% 52%;
+    --info-foreground: 0 0% 100%;
+
+    --chart-1: 173 58% 39%;
+    --chart-2: 210 100% 52%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 152 60% 40%;
+    --chart-5: 262 52% 55%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(173 58% 39%), hsl(190 70% 45%));
+    --gradient-dark: linear-gradient(135deg, hsl(220 25% 8%), hsl(220 20% 14%));
+    --shadow-card: 0 1px 3px 0 hsl(220 25% 10% / 0.06), 0 1px 2px -1px hsl(220 25% 10% / 0.06);
+    --shadow-elevated: 0 10px 25px -5px hsl(220 25% 10% / 0.1), 0 8px 10px -6px hsl(220 25% 10% / 0.08);
+  }
+
+  .dark {
+    --background: 225 25% 6%;
+    --foreground: 220 14% 92%;
+
+    --card: 225 20% 10%;
+    --card-foreground: 220 14% 92%;
+
+    --popover: 225 20% 10%;
+    --popover-foreground: 220 14% 92%;
+
+    --primary: 173 58% 45%;
+    --primary-foreground: 225 25% 6%;
+
+    --secondary: 225 18% 15%;
+    --secondary-foreground: 220 14% 92%;
+
+    --muted: 225 18% 13%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 262 52% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 15% 16%;
+    --input: 225 15% 16%;
+    --ring: 173 58% 45%;
+
+    --success: 152 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 0 0% 100%;
+    --info: 210 100% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --chart-1: 173 58% 45%;
+    --chart-2: 210 100% 60%;
+    --chart-3: 38 92% 55%;
+    --chart-4: 152 60% 45%;
+    --chart-5: 262 52% 60%;
+
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 10px 25px -5px hsl(0 0% 0% / 0.4), 0 8px 10px -6px hsl(0 0% 0% / 0.35);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .gradient-dark {
+    background: var(--gradient-dark);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+  .glass-effect {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+  .animate-count {
+    animation: countPulse 0.6s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes countPulse {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
