@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLeads } from '@/hooks/useLeads';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
-import { LogOut, Moon, Sun, Zap } from 'lucide-react';
+import { LogOut, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import StatsCards from '@/components/crm/StatsCards';
 import LeadChart from '@/components/crm/LeadChart';
@@ -33,9 +33,7 @@ const Dashboard = () => {
       <header className="sticky top-0 z-30 border-b border-border bg-card/60 glass-effect">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-primary shadow-[0_0_15px_hsl(173,58%,45%,0.2)]">
-              <Zap className="h-4 w-4 text-primary-foreground" />
-            </div>
+            <img src="/Gemini_Generated_Image_14yijx14yijx14yi.png" alt="LeadFlow" className="h-9 w-9 rounded-lg shadow-[0_0_15px_hsl(173,58%,45%,0.2)]" />
             <div>
               <h1 className="text-lg font-bold text-foreground leading-none">LeadFlow</h1>
               <p className="text-[11px] text-muted-foreground">Lead Management CRM</p>

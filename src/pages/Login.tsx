@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Lock, Mail, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 
@@ -61,9 +61,9 @@ const Login = () => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/60 shadow-lg shadow-primary/50"
+                className="mx-auto mb-4 flex justify-center"
               >
-                <Sparkles className="h-8 w-8 text-white" />
+                <img src="/Gemini_Generated_Image_14yijx14yijx14yi.png" alt="LeadFlow" className="h-16 w-16 rounded-2xl shadow-lg shadow-primary/50" />
               </motion.div>
               <h1 className="text-3xl font-bold text-white">LeadFlow</h1>
               <p className="mt-2 text-sm text-white/60">Client Lead Management System</p>
