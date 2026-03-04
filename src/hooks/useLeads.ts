@@ -1,60 +1,80 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { leadAPI } from '@/services/api';
-import type { Lead, LeadFormData, LeadStatus } from '@/types/lead';
+import type { Lead, LeadFormData, LeadStatus, FollowUpNote } from '@/types/lead';
+
+const n = (text: string, daysAgo: number): FollowUpNote => ({
+  text,
+  createdAt: new Date(Date.now() - daysAgo * 86400000).toISOString(),
+});
+
+const INITIAL_LEADS: Lead[] = [
+  { _id: '1', name: 'Sarah Johnson', email: 'sarah@techcorp.com', phone: '+1 555-0101', source: 'Website', status: 'New', notes: [n('Interested in premium plan', 1)], createdAt: '2026-02-20T10:30:00Z' },
+  { _id: '2', name: 'Michael Chen', email: 'mchen@startup.io', phone: '+1 555-0102', source: 'LinkedIn', status: 'Contacted', notes: [n('Called on Feb 18', 4), n('Scheduled demo for next week', 2)], createdAt: '2026-02-18T14:15:00Z' },
+  { _id: '3', name: 'Emily Rodriguez', email: 'emily.r@designhub.com', phone: '+1 555-0103', source: 'Referral', status: 'Converted', notes: [n('Signed up for annual plan', 5)], createdAt: '2026-02-15T09:00:00Z' },
+  { _id: '4', name: 'David Kim', email: 'dkim@enterprise.co', phone: '+1 555-0104', source: 'Google Ads', status: 'New', notes: [], createdAt: '2026-02-21T16:45:00Z' },
+  { _id: '5', name: 'Priya Patel', email: 'priya@cloudsoft.in', phone: '+91 98765-43210', source: 'Website', status: 'Contacted', notes: [n('Sent proposal', 3)], createdAt: '2026-02-19T11:20:00Z' },
+  { _id: '6', name: 'James Wilson', email: 'jwilson@media.com', phone: '+1 555-0106', source: 'Facebook', status: 'Converted', notes: [n('Upgraded to business tier', 10)], createdAt: '2026-02-10T08:30:00Z' },
+  { _id: '7', name: 'Ana Martinez', email: 'ana@shopwave.com', phone: '+1 555-0107', source: 'Referral', status: 'New', notes: [], createdAt: '2026-02-22T07:00:00Z' },
+  { _id: '8', name: 'Tom Baker', email: 'tbaker@logisticspro.com', phone: '+1 555-0108', source: 'Website', status: 'Contacted', notes: [n('Follow up needed', 5)], createdAt: '2026-02-17T13:10:00Z' },
+];
+
+let nextId = 9;
+
+const getStoredLeads = (): Lead[] => {
+  const stored = localStorage.getItem('leads');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      nextId = Math.max(...parsed.map((l: Lead) => parseInt(l._id) || 0), 8) + 1;
+      return parsed;
+    } catch {
+      return INITIAL_LEADS;
+    }
+  }
+  return INITIAL_LEADS;
+};
 
 export const useLeads = () => {
-  const [leads, setLeads] = useState<Lead[]>([]);
+  const [leads, setLeads] = useState<Lead[]>(getStoredLeads);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<LeadStatus | ''>('');
 
-  const fetchLeads = useCallback(async () => {
-    try {
-      const data = await leadAPI.getAll({ search: searchQuery, status: statusFilter });
-      setLeads(data);
-    } catch (error) {
-      console.error('Failed to fetch leads:', error);
-    }
-  }, [searchQuery, statusFilter]);
-
   useEffect(() => {
-    fetchLeads();
-  }, [fetchLeads]);
+    localStorage.setItem('leads', JSON.stringify(leads));
+  }, [leads]);
 
-  const addLead = useCallback(async (data: LeadFormData) => {
-    try {
-      await leadAPI.create(data);
-      fetchLeads();
-    } catch (error) {
-      console.error('Failed to add lead:', error);
-    }
-  }, [fetchLeads]);
+  const addLead = useCallback((data: LeadFormData) => {
+    const newLead: Lead = {
+      _id: String(nextId++),
+      ...data,
+      status: 'New',
+      notes: [],
+      createdAt: new Date().toISOString(),
+    };
+    setLeads(prev => [newLead, ...prev]);
+  }, []);
 
-  const updateStatus = useCallback(async (id: string, status: LeadStatus) => {
-    try {
-      await leadAPI.updateStatus(id, status);
-      fetchLeads();
-    } catch (error) {
-      console.error('Failed to update status:', error);
-    }
-  }, [fetchLeads]);
+  const updateStatus = useCallback((id: string, status: LeadStatus) => {
+    setLeads(prev => prev.map(l => l._id === id ? { ...l, status } : l));
+  }, []);
 
-  const addNote = useCallback(async (id: string, note: string) => {
-    try {
-      await leadAPI.addNote(id, note);
-      fetchLeads();
-    } catch (error) {
-      console.error('Failed to add note:', error);
-    }
-  }, [fetchLeads]);
+  const addNote = useCallback((id: string, note: string) => {
+    const newNote: FollowUpNote = { text: note, createdAt: new Date().toISOString() };
+    setLeads(prev => prev.map(l => l._id === id ? { ...l, notes: [...l.notes, newNote] } : l));
+  }, []);
 
-  const deleteLead = useCallback(async (id: string) => {
-    try {
-      await leadAPI.delete(id);
-      fetchLeads();
-    } catch (error) {
-      console.error('Failed to delete lead:', error);
-    }
-  }, [fetchLeads]);
+  const deleteLead = useCallback((id: string) => {
+    setLeads(prev => prev.filter(l => l._id !== id));
+  }, []);
+
+  const filteredLeads = useMemo(() => {
+    return leads.filter(lead => {
+      const matchesSearch = !searchQuery ||
+        lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lead.email.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = !statusFilter || lead.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [leads, searchQuery, statusFilter]);
 
   const stats = useMemo(() => ({
     total: leads.length,
@@ -64,7 +84,7 @@ export const useLeads = () => {
   }), [leads]);
 
   return {
-    leads,
+    leads: filteredLeads,
     allLeads: leads,
     stats,
     searchQuery,

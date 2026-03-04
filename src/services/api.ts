@@ -53,12 +53,12 @@ export const leadAPI = {
   },
 
   updateStatus: async (id: string, status: LeadStatus): Promise<Lead> => {
-    const { data } = await api.patch(`/leads/${id}/status`, { status });
+    const { data } = await api.patch(`/leads/${id}?action=status`, { status });
     return data;
   },
 
   addNote: async (id: string, note: string): Promise<Lead> => {
-    const { data } = await api.post(`/leads/${id}/notes`, { note });
+    const { data } = await api.post(`/leads/${id}?action=notes`, { note });
     return data;
   },
 
